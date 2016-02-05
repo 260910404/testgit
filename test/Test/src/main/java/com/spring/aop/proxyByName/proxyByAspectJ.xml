@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+	xmlns:context="http://www.springframework.org/schema/context"  
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans  
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+	http://www.springframework.org/schema/context  
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd">  
+  
+  
+  	<bean id="welcomeAdvice" class="com.spring.aop.proxyCreator.WelcomeAdvice"></bean>
+  	<bean id="memberAdvice" class="com.spring.aop.proxyCreator.MemberAdvice"></bean>
+  	
+  	<!-- 按bean的id/name过滤, 拦截所有方法，
+  		自动搜索advisor
+  	-->
+	<bean class="org.springframework.aop.aspectj.autoproxy.AspectJAwareAdvisorAutoProxyCreator">
+	</bean>
+	
+	<!-- 自动扫描： execution(* .sample.service.impl..*.*(..))
+	第一个*号： 标识返回类型，*标识所有类型
+	包名：	标识需要拦截的包名，后面的两个句点标识当前包和当前包的所有子包
+	第二个*号：标识类名，*号标识所有的类
+	*(..): 最后这个星号表示方法名，*号标识所有的方法，后面括弧里面表示方法的参数，两个句点标识任何参数
+	 -->
+	<bean id="aspectjAspect" class="org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor">
+		<property name="advice" ref="welcomeAdvice"/>
+		<property name="expression" value="execution(* com.spring.aop.proxyCreator..*.buy*(..))"/>
+	</bean>
+  
+ 	<bean id="buyBean" class="com.spring.aop.proxyCreator.ShoppingImplA">
+ 		<property name="customer">
+			<ref bean="customer"/>
+		</property>
+ 	</bean>
+  
+ 	<bean id="sellBean" class="com.spring.aop.proxyCreator.ShoppingImplB">
+ 		<property name="customer">
+			<ref bean="customer"/>
+		</property>
+ 	</bean>
+
+	<bean id="customer" class="com.spring.aop.proxyCreator.Customer">
+		<constructor-arg index="0">
+			<value>gaoxiang</value>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<value>26</value>
+		</constructor-arg>
+	</bean>
+  
+</beans> 

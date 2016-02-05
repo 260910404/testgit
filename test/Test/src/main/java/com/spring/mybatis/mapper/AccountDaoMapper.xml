@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spring.mybatis.dao.AccountDao">
+	<resultMap id="account" type="com.spring.mybatis.pojo.Account">
+		<id column="userid" property="id" jdbcType="BIGINT"/>
+		<result column="username" property="userName" jdbcType="VARCHAR"/>
+		<result column="userpwd" property="password" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="cols">userid,username,userpwd</sql>
+	
+	<select id="queryAccountList" parameterType="string" resultMap="account">
+		select 
+		<include refid="cols"/>
+		from PBQ_User
+	</select>
+	
+</mapper>

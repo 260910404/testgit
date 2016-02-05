@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+	xmlns:context="http://www.springframework.org/schema/context"  
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans  
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+	http://www.springframework.org/schema/context  
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd">  
+  
+  
+  	<bean id="welcomeAdvice" class="com.spring.aop.proxyCreator.WelcomeAdvice"></bean>
+  	<bean id="memberAdvice" class="com.spring.aop.proxyCreator.MemberAdvice"></bean>
+  	
+  	<!-- 按bean的id/name过滤, 拦截所有方法 -->
+	<bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="beanNames">
+			<list>
+				<value>*Bean</value>
+			</list>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>welcomeAdvice</value>
+				<value>memberAdvice</value>
+			</list>
+		</property>
+	</bean>
+  
+ 	<bean id="buyBean" class="com.spring.aop.proxyCreator.ShoppingImplA">
+ 		<property name="customer">
+			<ref bean="customer"/>
+		</property>
+ 	</bean>
+  
+ 	<bean id="sellBean" class="com.spring.aop.proxyCreator.ShoppingImplB">
+ 		<property name="customer">
+			<ref bean="customer"/>
+		</property>
+ 	</bean>
+
+	<bean id="customer" class="com.spring.aop.proxyCreator.Customer">
+		<constructor-arg index="0">
+			<value>gaoxiang</value>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<value>26</value>
+		</constructor-arg>
+	</bean>
+  
+</beans> 

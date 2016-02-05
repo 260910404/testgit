@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+	xmlns:context="http://www.springframework.org/schema/context"  
+	xmlns:tx="http://www.springframework.org/schema/tx"  
+	xsi:schemaLocation=" 
+	http://www.springframework.org/schema/beans  
+	http://www.springframework.org/schema/beans/spring-beans.xsd  
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/context  
+	http://www.springframework.org/schema/context/spring-context.xsd">  
+  
+	<context:property-placeholder location="classpath*:com/spring/mybatis/jdbc.properties" />
+  
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<!-- connection info -->
+		<property name="driverClassName" value="${mysql.jdbc.driver}"></property>
+		<property name="url" value="${mysql.jdbc.url}"></property>
+		<property name="username" value="${mysql.jdbc.username}"></property>
+		<property name="password" value="${mysql.jdbc.password}"></property>
+		<!-- connection pooling info -->
+		<property name="initialSize" value="${jdbc.initialSize}"></property>
+		<property name="maxActive" value="${jdbc.maxActive}"></property>
+		<property name="minIdle" value="${jdbc.minIdle}"></property>
+		<property name="maxIdle" value="${jdbc.maxIdle}"></property>
+		<property name="defaultAutoCommit" value="${jdbc.defaultAutoCommit}"></property>
+		<!-- 连接Idle一个小时后超市 -->
+		<property name="timeBetweenEvictionRunsMillis" value="3600000"></property>
+		<property name="minEvictableIdleTimeMillis" value="3600000"></property>
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<!-- 加入分页拦截器
+		<property name="configLocation" value="mybatis-config.xml"></property>
+		-->
+		<property name="mapperLocations">
+			<list>
+				<value>classpath*:com/spring/mybatis/mapper/*Mapper.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.spring.mybatis.dao"></property>
+		<!-- 在代码中全部使用注解方式操作，Dao接口必须注解该类 
+		<property name="annotationClass" value="com.purang.btms.commons.BtmsMyBatisWrapper"></property> -->
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+  
+	<!-- 使用annotation注解方式配置事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<!-- Spring组件扫描 -->
+	<context:component-scan base-package="com.spring.mybatis.service.*,com.spring.mybatis.action.*"/>
+	
+</beans> 
